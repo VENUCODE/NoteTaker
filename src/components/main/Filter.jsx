@@ -1,19 +1,20 @@
-//search input and filter btn(asc,desc)
 import { useState } from "react";
+import { RiEqualizerLine } from "react-icons/ri";
 const Filter = () => {
   const [text, setText] = useState("");
 
   return (
-    <div className="flex items-center p-4 border-t">
+    <div className="flex gap-2 items-center p-4 ">
       <input
         type="text"
         value={text}
         onChange={(e) => setText(e.target.value)}
-        className="flex-1 p-2 border rounded-lg outline-none"
+        className="flex-1 p-2 text-sm pl-4 focus:outline-gray-500/50 rounded-full border border-gray-400/50"
         placeholder="Search..."
       />
-      <button className="ml-2 bg-blue-500 text-white p-2 rounded-lg">
-        Asc/Desc
+      <button className="md:text-md text-sm gap-2 capitalize bg-gray-200/50 hover:bg-gray-200/80 transition-all duration-100 py-1 px-2 text-slate-900 font-bold rounded-full flex flex-row items-center ">
+        <RiEqualizerLine size={14} />
+        <span className="">sort</span>
       </button>
     </div>
   );

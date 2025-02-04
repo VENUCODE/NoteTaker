@@ -1,10 +1,24 @@
 import React, { useState, useRef, useEffect } from "react";
-import { FaMicrophone, FaMicrophoneAlt } from "react-icons/fa";
+import { FaMicrophone, FaMicrophoneAltSlash } from "react-icons/fa";
 
 const AudioInput = ({ setInputText }) => {
   const [isRecording, setIsRecording] = useState(false);
-  const [transcript, setTranscript] = useState("");
+  const [timeLeft, setTimeLeft] = useState(0); // 1-minute timer
   const recognitionRef = useRef(null);
+
+  useEffect(() => {
+    let timer;
+    if (isRecording) {
+      setTimeLeft(0);
+      timer = setInterval(() => {
+        setTimeLeft((prev) => (prev < 60 ? prev + 1 : 0));
+      }, 1000);
+    } else {
+      clearInterval(timer);
+    }
+
+    return () => clearInterval(timer);
+  }, [isRecording]);
 
   const startRecording = () => {
     if (
@@ -27,7 +41,7 @@ const AudioInput = ({ setInputText }) => {
       for (let i = 0; i < event.results.length; i++) {
         finalTranscript += event.results[i][0].transcript + " ";
       }
-      setTranscript(finalTranscript);
+      setInputText(finalTranscript);
     };
 
     recognition.onerror = (event) => {
@@ -50,22 +64,24 @@ const AudioInput = ({ setInputText }) => {
     <>
       <button
         onClick={isRecording ? stopRecording : startRecording}
-        className={`px-4 py-1 gap-2 items-center  text-white font-bold rounded-full flex items-center   transition-all duration-300 ${
+        className={`p-2 items-center text-white font-bold rounded-full flex transition-all duration-300 ${
           isRecording
-            ? "bg-red-500  shadow-lg shadow-red-400"
-            : "bg-blue-500 hover:bg-blue-600"
+            ? "bg-lime-500 shadow-lg hover:bg-lime-600"
+            : "bg-red-500 shadow-red-400"
         }`}
       >
         {isRecording ? (
-          <span className="animate-pulse">
-            <FaMicrophoneAlt size={20} />
-          </span>
+          <div className="relative flex">
+            <span className=" animate-pulse text-white">
+              <FaMicrophone size={18} />
+            </span>
+            <span className="ps-2 text-sm">
+              {timeLeft < 10 ? "0" + timeLeft : timeLeft} s
+            </span>
+          </div>
         ) : (
-          <FaMicrophone size={14} />
+          <FaMicrophoneAltSlash size={18} />
         )}
-        <span className="text-sm">
-          {isRecording ? "Recording..." : "Speak up"}
-        </span>
       </button>
     </>
   );
