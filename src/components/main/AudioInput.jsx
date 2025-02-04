@@ -64,7 +64,7 @@ const AudioInput = ({ setInputText }) => {
     <>
       <button
         onClick={isRecording ? stopRecording : startRecording}
-        className={`p-2 items-center text-white font-bold rounded-full flex transition-all duration-300 ${
+        className={`p-2 relative  group  items-center text-white font-bold rounded-full flex transition-all duration-300 ${
           isRecording
             ? "bg-lime-500 shadow-lg hover:bg-lime-600"
             : "bg-red-500 shadow-red-400"
@@ -82,6 +82,9 @@ const AudioInput = ({ setInputText }) => {
         ) : (
           <FaMicrophoneAltSlash size={18} />
         )}
+        <span className="font-normal absolute whitespace-nowrap left-1/2 -top-7 transform -translate-x-1/2 scale-0 group-hover:scale-100 transition bg-orange-500/30 text-orange-800 text-xs px-2 py-1 rounded-md">
+          Record
+        </span>
       </button>
     </>
   );

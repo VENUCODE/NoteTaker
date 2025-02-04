@@ -5,11 +5,15 @@ import InputContainer from "./InputContainer";
 const Main = () => {
   return (
     <div className="flex-1 h-full flex flex-col ">
-      <Filter />
-      <div className="flex-1 overflow-y-auto">
+      <div className="sticky top-0 w-full bg-white my-0 z-30 rounded-full">
+        <Filter />
+      </div>
+      <div className="flex-1 min-h-0 overflow-y-auto">
         <Contents />
       </div>
-      <InputContainer />
+      <div className="sticky bottom-0 w-full">
+        <InputContainer />
+      </div>
     </div>
   );
 };
