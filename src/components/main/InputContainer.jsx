@@ -5,13 +5,19 @@ import AudioInput from "./AudioInput";
 import ImageUpload from "../ImageUpload";
 import { LuImageOff } from "react-icons/lu";
 import { Button, Image, Modal } from "antd";
+import { useNote } from "../../contexts/useNote";
+import { FaSpinner } from "react-icons/fa";
 
 const InputContainer = () => {
   const [inputText, setInputText] = useState("");
   const [selectedImages, setImages] = useState([]);
   const [audio, setAudio] = useState(null);
   const [title, setTitle] = useState("");
+  const [audioUrl, setAudioUrl] = useState(null);
+  const [loading, setLoading] = useState(false);
   const [openModal, setOpenModal] = useState(false);
+
+  const { addNote } = useNote();
   const handleChange = (e) => {
     setInputText(e.target.value);
     if (e.target.value === "") {
@@ -19,14 +25,44 @@ const InputContainer = () => {
     }
   };
   const handleClear = () => {
+    setOpenModal(false);
     setInputText("");
     setImages([]);
     setAudio(null);
+    setAudioUrl(null);
     setTitle("");
   };
+  const handleAddNote = async () => {
+    const formData = new FormData();
+    if (selectedImages.length > 0) {
+      selectedImages.forEach((image) => {
+        formData.append("images", image.originFileObj);
+      });
+    }
+    if (title) {
+      formData.append("title", title);
+    }
+    if (audio) {
+      console.log(audio);
 
+      formData.append("audio", audio, "audio.wav");
+    }
+    if (inputText) {
+      formData.append("description", inputText);
+    }
+    await addNote(formData, setLoading, handleClear);
+  };
+  useEffect(() => {
+    const getUrl = async () => {
+      if (audio) {
+        const audioUrl = URL.createObjectURL(audio);
+        setAudioUrl(audioUrl);
+      }
+    };
+    getUrl();
+  }, [audio]);
   return (
-    <div className="mx-auto  transition-all duration-100 md:py-2 md:bg-white bg-transparent ">
+    <div className="mx-auto  transition-all duration-100 md:py-1 md:bg-white bg-transparent rounded-b-full">
       <div className="flex md:w-2/3 w-full px-2 mx-auto justify-around items-center shadow-lg bg-white shadow-gray-400/50    rounded-full  border-1 border-gray-200">
         <div className="flex items-center gap-2 p-2  rounded-full cursor-pointer">
           {selectedImages.length > 0 && (
@@ -77,9 +113,9 @@ const InputContainer = () => {
         onCancel={() => setOpenModal(false)}
       >
         <div className="flex flex-col gap-2">
-          <lable htmlFor="title" className="text-gray-600 font-bold">
+          <label htmlFor="title" className="text-gray-600 font-bold">
             Note Title
-          </lable>
+          </label>
           <input
             type="text"
             id="title"
@@ -101,7 +137,7 @@ const InputContainer = () => {
               <h2 className="text-gray-600 font-bold mt-2">Recorded Audio</h2>
               <div className="flex justify-center mt-2">
                 <audio controls className="w-full bg-transparent custom-audio">
-                  <source src={audio} type="audio/wav" />
+                  <source src={audioUrl} type="audio/wav" />
                   Your browser does not support the audio element.
                 </audio>
               </div>
@@ -123,7 +159,7 @@ const InputContainer = () => {
             </>
           )}
           <button
-            onClick={() => setOpenModal(false)}
+            onClick={() => handleAddNote()}
             disabled={title === ""}
             className={`relative group transition-all duration-200 flex items-center justify-center p-2 rounded-full text-white cursor-pointer ${
               title === ""
@@ -131,6 +167,12 @@ const InputContainer = () => {
                 : "bg-violet-500"
             }`}
           >
+            {loading && (
+              <>
+                <FaSpinner />
+                Adding.....
+              </>
+            )}
             {title === "" ? "Enter title to add Note" : "Add Note"}
           </button>
         </div>

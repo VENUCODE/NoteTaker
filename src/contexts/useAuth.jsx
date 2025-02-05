@@ -33,10 +33,10 @@ const AuthProvider = ({ children }) => {
       const data = await response.json();
       setToken(data.token);
       setIsAuthenticated(true);
-      setUser(data.user); // Keep as object
+      setUser(JSON.stringify(data.user));
 
       localStorage.setItem("token", data.token);
-      localStorage.setItem("user", JSON.stringify(data.user)); // Fixed
+      localStorage.setItem("user", JSON.stringify(data.user));
 
       message.success("Login success");
       callback();

@@ -2,12 +2,15 @@ import React from "react";
 import NoteCard from "./NoteCard";
 import "./Contents.css";
 
-const Contents = () => {
+import NoteSkeleton from "./NoteSkeleton";
+
+const Contents = ({ notes }) => {
   return (
-    <div className="h-full overflow-y-auto ">
-      <div className="grid grid-cols-1  scroll-smooth custom-scroll sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 p-4">
-        {[1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4].map((item) => (
-          <NoteCard key={item} />
+    <div className="h-full overflow-y-auto min-w-full ">
+      <div className="grid grid-cols-1 min-w-full scroll-smooth custom-scroll sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-4 p-4">
+        {notes?.length == 0 && <NoteSkeleton />}
+        {notes?.map((item, index) => (
+          <NoteCard key={index} data={item} />
         ))}
       </div>
     </div>

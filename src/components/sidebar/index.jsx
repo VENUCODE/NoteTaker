@@ -3,9 +3,12 @@ import { FaHouse, FaStar, FaUser } from "react-icons/fa6";
 import { GiNotebook } from "react-icons/gi";
 import { useAuth } from "../../contexts/useAuth";
 import { Avatar } from "antd";
+import hostUrl from "../../endpoints";
+import { useEffect } from "react";
 
-const SideBar = ({ isOpen }) => {
+const SideBar = () => {
   const { logout, user } = useAuth();
+
   return (
     <div>
       {/* Top Bar for Small and Medium Devices */}
@@ -14,19 +17,29 @@ const SideBar = ({ isOpen }) => {
         <GiNotebook size={30} className="text-gray-700 " />
 
         {/* Navigation Icons */}
-        <div className="flex items-end justify-between gap-2">
-          <a href="#">
-            <FaHouse size={30} className=" text-violet-500 cursor-pointer" />
-          </a>
-
-          <Avatar
-            src={user?.profile_pic}
-            color="danger"
-            icon={<FaUser />}
-            alt="user profile"
-            className="text-violet-500 bg-violet-300"
-            size="default"
-          />
+        <div className="flex items-center justify-between gap-2">
+          <div className="relative transition-all duration-100 hover:bg-violet-400 p-1 rounded-full group">
+            <Avatar
+              src={hostUrl + user?.profile_pic}
+              color="danger"
+              icon={<FaUser />}
+              alt="user profile"
+              size="default"
+              className="shadow-md"
+            />
+            <span className="absolute capitalize left-1/2 -bottom-7 transform -translate-x-1/2 scale-0 group-hover:scale-100 transition bg-black shadow-xl text-white text-xs px-2 py-1 rounded-md">
+              {user?.username}
+            </span>
+          </div>
+          <div
+            onClick={() => logout()}
+            className="relative cursor-pointer transition-all duration-100 hover:bg-red-200 p-2 rounded-full group"
+          >
+            <FaSignOutAlt size={25} className="text-red-600 " />
+            <span className="absolute capitalize left-1/2 -bottom-7 transform -translate-x-1/2 scale-0 group-hover:scale-100 transition bg-black shadow-xl text-white text-xs px-2 py-1 rounded-md">
+              Logout
+            </span>
+          </div>
         </div>
       </div>
 
@@ -50,7 +63,7 @@ const SideBar = ({ isOpen }) => {
         <div className="absolute  bottom-4 text-gray-600 left-4 ">
           <div className="relative flex justify-start gap-1 items-end w-[20ch]">
             <Avatar
-              src={user?.profile_pic}
+              src={hostUrl + user?.profile_pic}
               color="danger"
               icon={<FaUser />}
               alt="user profile"

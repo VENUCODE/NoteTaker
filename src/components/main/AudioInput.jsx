@@ -52,8 +52,8 @@ const AudioInput = ({ setInputText, setAudio }) => {
         const audioBlob = new Blob(audioChunksRef.current, {
           type: "audio/wav",
         });
-        const audioUrl = URL.createObjectURL(audioBlob);
-        setAudio(audioUrl);
+
+        setAudio(audioBlob);
       };
 
       mediaRecorder.start();

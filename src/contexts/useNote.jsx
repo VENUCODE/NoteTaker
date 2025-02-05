@@ -1,39 +1,38 @@
 import { createContext, useState, useEffect, useContext } from "react";
 import hostUrl, { endpoints } from "../endpoints";
-
+import { useAuth } from "./useAuth";
+import { message } from "antd";
 const NoteContext = createContext();
 
 const NoteProvider = ({ children }) => {
   const [notes, setNotes] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
-  const token = localStorage.getItem("token");
 
-  useEffect(() => {
-    getNotes();
-  }, []);
+  const { token } = useAuth();
 
-  const addNote = async (newNote) => {
+  const addNote = async (newNote, setLoading, callback) => {
     try {
       setLoading(true);
       const response = await fetch(`${hostUrl}${endpoints.addNote}`, {
         method: "POST",
         headers: {
-          "Content-Type": "application/json",
           Authorization: `${token}`,
         },
         body: newNote,
       });
       const data = await response.json();
-      setNotes([...notes, data]);
+      getNotes();
+      message.success("Note added successfully!");
+      callback();
     } catch (error) {
-      setError(error.message);
+      message.error(error.message);
+      console.error(error.message);
     } finally {
       setLoading(false);
     }
   };
 
-  const deleteNote = async (id) => {
+  const deleteNote = async (id, setLoading) => {
     try {
       setLoading(true);
       await fetch(`${hostUrl}${endpoints.deleteNote}/${id}`, {
@@ -42,9 +41,11 @@ const NoteProvider = ({ children }) => {
           Authorization: `${token}`,
         },
       });
-      setNotes(notes.filter((note) => note.id !== id));
+      message.info("Deleted Note");
+      getNotes();
     } catch (error) {
-      setError(error.message);
+      message.error("Failed to delete note");
+      console.error(error.message);
     } finally {
       setLoading(false);
     }
@@ -62,9 +63,10 @@ const NoteProvider = ({ children }) => {
         body: updatedNote,
       });
       const data = await response.json();
-      setNotes(notes.map((note) => (note.id === id ? data : note)));
+      getNotes();
     } catch (error) {
-      setError(error.message);
+      message.error(error.message);
+      console.error(error.message);
     } finally {
       setLoading(false);
     }
@@ -73,20 +75,26 @@ const NoteProvider = ({ children }) => {
   const getNotes = async () => {
     try {
       setLoading(true);
+
       const response = await fetch(`${hostUrl}${endpoints.getNotes}`, {
         method: "GET",
         headers: {
-          Authorization: `${token}`,
+          Authorization: token,
         },
       });
       const data = await response.json();
       setNotes(data);
     } catch (error) {
-      setError(error.message);
+      message.error(error.message);
+      console.error(error.message);
     } finally {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    getNotes();
+  }, []);
 
   return (
     <NoteContext.Provider
@@ -97,7 +105,6 @@ const NoteProvider = ({ children }) => {
         updateNote,
         getNotes,
         loading,
-        error,
       }}
     >
       {children}
@@ -105,12 +112,6 @@ const NoteProvider = ({ children }) => {
   );
 };
 
-const useNote = () => {
-  const context = useContext(NoteContext);
-  if (!context) {
-    throw new Error("useNote must be used within a NoteProvider");
-  }
-  return context;
-};
+const useNote = () => useContext(NoteContext);
 
 export { NoteProvider, useNote };
