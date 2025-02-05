@@ -1,4 +1,4 @@
-# Notetaker Application README
+# Notetaker Application
 
 ## Overview
 
