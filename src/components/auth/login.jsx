@@ -3,7 +3,7 @@ import React from "react";
 const Login = ({ onModeChange }) => {
   return (
     <div className="container mx-auto p-4 pt-6 mt-10 mb-10">
-      <div className="max-w-md mx-auto bg-white rounded-xl shadow-xl p-6">
+      <div className="max-w-md mx-auto bg-blur rounded-xl shadow-xl p-6">
         <h2 className="text-3xl font-bold text-center mb-4">Login</h2>
         <form className="space-y-6">
           <div className="mb-4">

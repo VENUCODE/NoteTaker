@@ -1,12 +1,22 @@
-import React from "react";
+import React, { useState } from "react";
+import ImageUpload from "../ImageUpload";
 
 const Signup = ({ onModeChange }) => {
+  const [profilePic, setProfilePic] = useState([]);
+
   return (
     <div className="container mx-auto p-4 pt-6 mt-10 mb-10">
-      <div className="max-w-md mx-auto bg-white rounded-xl shadow-xl p-6">
+      <div className="max-w-md mx-auto bg-blur rounded-xl shadow-xl p-6">
         <h2 className="text-3xl font-bold text-center mb-4">Signup</h2>
         <form className="space-y-6">
           <div className="mb-4">
+            <label>Profile picture</label>
+            {/* <ImageUpload
+              type="picture-card"
+              limit={1}
+              photos={profilePic}
+              setPhotos={setProfilePic}
+            /> */}
             <label
               className="block text-gray-700 text-sm font-bold mb-2"
               htmlFor="username"
