@@ -10,7 +10,7 @@ const Auth = () => {
   };
 
   return (
-    <div className="w-full flex justify-center items-center h-full bg-auth">
+    <div className="w-full relative  h-full bg-auth">
       {mode === "login" ? (
         <Login onModeChange={handleModeChange} />
       ) : (

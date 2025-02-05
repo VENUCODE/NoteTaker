@@ -9,7 +9,12 @@ const getBase64 = (file) =>
     reader.onerror = (error) => reject(error);
   });
 
-const ImageUpload = ({ notePhotos, setNotePhotos }) => {
+const ImageUpload = ({
+  notePhotos,
+  setNotePhotos,
+  limit = 10,
+  type = "picture",
+}) => {
   const [fileList, setFileList] = useState([]);
   const [previewOpen, setPreviewOpen] = useState(false);
   const [previewImage, setPreviewImage] = useState("");
@@ -43,9 +48,9 @@ const ImageUpload = ({ notePhotos, setNotePhotos }) => {
         onPreview={handlePreview}
         onChange={handleChange}
         aspect={2.5}
-        multiple
+        multiple={limit > 1}
         maxCount={10}
-        listType="picture"
+        listType={type}
         className="p-0 relative w-full cursor-pointer"
         beforeUpload={() => false}
       >

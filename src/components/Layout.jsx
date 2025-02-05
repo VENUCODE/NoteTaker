@@ -14,19 +14,12 @@ const Layout = () => {
 
   return (
     <>
-      {isMediumDevice && (
-        <button
-          className="md:hidden p-2 text-gray-800 "
-          onClick={() => setIsOpen(!isOpen)}
-        >
-          <MdMenu size={24} />
-        </button>
-      )}
+      <div className="flex gap-2 p-2">
+        <SideBar isOpen={isOpen} />
 
-      <SideBar isOpen={isOpen} />
-
-      <div className="flex-grow-1 p-0 m-0  bg-white rounded-lg border border-gray-300 shadow-md">
-        <Main />
+        <div className="flex-grow-1 p-0 m-0  md:bg-white rounded-lg md:border md:border-gray-300 md:shadow-md">
+          <Main />
+        </div>
       </div>
     </>
   );

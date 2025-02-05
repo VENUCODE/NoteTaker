@@ -1,5 +1,5 @@
-const serverUrl = "https://localhost:3300";
-const endpoints = {
+const hostUrl = "http://localhost:3300";
+export const endpoints = {
   addNote: "/note/add-new",
   deleteNote: "/note/delete/",
   updateNote: "/note/update/",
@@ -8,3 +8,5 @@ const endpoints = {
   login: "/auth/login",
   register: "/auth/register",
 };
+
+export default hostUrl;

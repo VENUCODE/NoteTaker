@@ -26,8 +26,8 @@ const InputContainer = () => {
   };
 
   return (
-    <div className="mx-auto md:w-2/3 w-full py-2 bg-white   transition-all duration-100">
-      <div className="flex justify-around items-center shadow-lg shadow-gray-400/50   px-2 rounded-full  border-1 border-gray-200">
+    <div className="mx-auto  transition-all duration-100 md:py-2 md:bg-white bg-transparent ">
+      <div className="flex md:w-2/3 w-full px-2 mx-auto justify-around items-center shadow-lg bg-white shadow-gray-400/50    rounded-full  border-1 border-gray-200">
         <div className="flex items-center gap-2 p-2  rounded-full cursor-pointer">
           {selectedImages.length > 0 && (
             <div className="relative  transition-all duration-100  p-1 rounded-lg group">
@@ -64,7 +64,7 @@ const InputContainer = () => {
             }`}
           >
             <IoSend size={20} />
-            <span className="font-normal absolute whitespace-nowrap left-1/2 -top-7 transform -translate-x-1/2 scale-0 group-hover:scale-100 transition bg-indigo-500/30 text-indigo-800 text-xs px-2 py-1 rounded-md">
+            <span className="hidden md:block font-normal absolute whitespace-nowrap left-1/2 -top-7 transform -translate-x-1/2 scale-0 group-hover:scale-100 transition bg-indigo-500/30 text-indigo-800 text-xs px-2 py-1 rounded-md">
               Add note
             </span>
           </button>

@@ -25,3 +25,38 @@
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
 }
+
+/* .custom-image-input {
+    display: flex;
+
+}
+
+.file-input {
+    display: none;
+}
+
+.image-label {
+    border: 2px dashed #ccc;
+    padding: 10px;
+    border-radius: 10px;
+    cursor: pointer;
+    text-align: center;
+    transition: border-color 0.3s ease;
+}
+
+.image-label:hover {
+    border-color: #999;
+}
+
+.placeholder {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    color: #aaa;
+}
+
+.image-preview {
+    height: 4rem;
+    object-fit: cover;
+    border-radius: 5px;
+} */

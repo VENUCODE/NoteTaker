@@ -6,7 +6,7 @@ const Filter = () => {
   const [text, setText] = useState("");
 
   return (
-    <div className="flex gap-2 items-center md:p-4 pt-2 px-2  ">
+    <div className="flex gap-2 items-center  bg-white  rounded-full p-2 ">
       <input
         type="text"
         value={text}
