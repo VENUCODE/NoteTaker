@@ -9,13 +9,7 @@ const getBase64 = (file) =>
     reader.onerror = (error) => reject(error);
   });
 
-const ImageUpload = ({
-  notePhotos,
-  setNotePhotos,
-  limit = null,
-  listType = "picture-card",
-  ...props
-}) => {
+const ImageUpload = ({ notePhotos, setNotePhotos }) => {
   const [fileList, setFileList] = useState([]);
   const [previewOpen, setPreviewOpen] = useState(false);
   const [previewImage, setPreviewImage] = useState("");
@@ -49,12 +43,11 @@ const ImageUpload = ({
         onPreview={handlePreview}
         onChange={handleChange}
         aspect={2.5}
-        multiple={limit ? false : true}
-        maxCount={limit}
+        multiple
+        maxCount={10}
         listType="picture"
         className="p-0 relative w-full cursor-pointer"
         beforeUpload={() => false}
-        {...props}
       >
         <div className="relative  transition-all duration-100  p-1 rounded-lg group">
           <LuImagePlus size={20} />

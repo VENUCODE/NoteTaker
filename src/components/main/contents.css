@@ -1,0 +1,28 @@
+/* Customize the controls */
+.custom-audio::-webkit-media-controls-panel {
+    background-color: transparent;
+    border-radius: 12px;
+    margin: 0px;
+}
+
+.custom-audio::-webkit-media-controls-play-button {
+    background-color: rgba(245, 91, 245, 0.664);
+    border-radius: 50%;
+    padding: 5px;
+}
+
+.custom-audio::-webkit-media-controls-play-button:hover {
+    background-color: #388e3c;
+}
+
+.custom-audio::-webkit-media-controls-progress .custom-audio::-webkit-media-controls-timeline {
+    background-color: #a1a;
+}
+
+
+
+.custom-audio::-webkit-media-controls-current-time-display,
+.custom-audio::-webkit-media-controls-time-remaining-display {
+    color: #333333;
+    font-weight: bold;
+}

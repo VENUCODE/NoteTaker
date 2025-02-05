@@ -1,7 +1,7 @@
 import Contents from "./Contents";
 import Filter from "./Filter";
 import InputContainer from "./InputContainer";
-
+import "./contents.css";
 const Main = () => {
   return (
     <div className="flex-1 h-full flex flex-col ">

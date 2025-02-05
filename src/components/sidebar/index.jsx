@@ -18,10 +18,10 @@ const SideBar = ({ isOpen }) => {
       </div>
       <nav className="mt-4 flex flex-row lg:flex-col">
         <ul className="font-medium leading-8">
-          <li className="flex ps-4 items-baseline p-2 text-sm text-gray-500  hover:bg-violet-300/30 hover:text-violet-500 rounded-full cursor-pointer">
+          <li className="flex ps-4 transition-all duration-400 items-baseline p-2 text-sm text-gray-500  hover:bg-violet-300/30 hover:text-violet-500 rounded-full cursor-pointer">
             <FaHouse className="mr-1 " size={14} /> <span>Home</span>
           </li>
-          <li className="flex ps-4 items-baseline p-2 text-sm text-gray-500 hover:bg-violet-300/30 hover:text-violet-500 rounded-full cursor-pointer">
+          <li className="flex ps-4 transition-all duration-400 items-baseline p-2 text-sm text-gray-500 hover:bg-violet-300/30 hover:text-violet-500 rounded-full cursor-pointer">
             <FaStar className="mr-1 " size={14} />
             <span>Favorites</span>
           </li>
