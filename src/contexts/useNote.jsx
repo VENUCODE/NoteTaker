@@ -38,7 +38,7 @@ const NoteProvider = ({ children }) => {
       await fetch(`${hostUrl}${endpoints.deleteNote}/${id}`, {
         method: "DELETE",
         headers: {
-          Authorization: `${token}`,
+          Authorization: token,
         },
       });
       message.info("Deleted Note");
@@ -51,7 +51,36 @@ const NoteProvider = ({ children }) => {
     }
   };
 
-  const updateNote = async (id, updatedNote) => {
+  const addNewPhotos = async (id, formData, setLoading) => {
+    try {
+      setLoading(true);
+      console.log(
+        [...formData.entries()].reduce(
+          (acc, [key, value]) => ({ ...acc, [key]: value }),
+          {}
+        )
+      );
+      return;
+      const response = await fetch(
+        `${hostUrl}${endpoints.uploadPhotos}/${id}`,
+        {
+          method: "PATCH",
+          body: formData,
+        }
+      );
+      const data = await response.json();
+      if (!response.ok) {
+        throw new Error(data.message);
+      }
+      getNotes();
+    } catch (error) {
+      message.error(error.message);
+      console.error(error.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+  const updateNote = async (id, payload, setLoading) => {
     try {
       setLoading(true);
       const response = await fetch(`${hostUrl}${endpoints.updateNote}/${id}`, {
@@ -60,9 +89,12 @@ const NoteProvider = ({ children }) => {
           "Content-Type": "application/json",
           Authorization: `${token}`,
         },
-        body: updatedNote,
+        body: JSON.stringify(payload),
       });
       const data = await response.json();
+      if (!response.ok) {
+        throw new Error(data.message);
+      }
       getNotes();
     } catch (error) {
       message.error(error.message);
@@ -104,6 +136,7 @@ const NoteProvider = ({ children }) => {
         deleteNote,
         updateNote,
         getNotes,
+        addNewPhotos,
         loading,
       }}
     >

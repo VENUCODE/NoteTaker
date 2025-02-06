@@ -40,7 +40,7 @@ input:not(:placeholder-shown):invalid:focus {
 }
 
 
-.ant-upload-list {
+#note-input .ant-upload-list {
     color: #333;
     background-color: #17020c34;
     position: absolute !important;
@@ -76,11 +76,11 @@ input:not(:placeholder-shown):invalid:focus {
 }
 
 
-.ant-upload-list:empty {
+#note-input .ant-upload-list:empty {
     display: none;
 }
 
-.ant-upload-list-item-container {
+#note-input .ant-upload-list-item-container {
     display: inline-block;
     padding: 0px;
     border-radius: 1rem;
@@ -95,27 +95,27 @@ input:not(:placeholder-shown):invalid:focus {
     transition: transform 0.3s ease-in-out;
 }
 
-.ant-upload-list-item {
+#note-input .ant-upload-list-item {
     border: none;
     padding: 0px;
 }
 
-.ant-upload-list-item-container:hover {
+#note-input .ant-upload-list-item-container:hover {
     transform: scale(1.05);
     box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
 }
 
-.ant-upload-list-item,
-.ant-upload-list-item-undefined {
+#note-input .ant-upload-list-item,
+#note-input .ant-upload-list-item-undefined {
     border: none !important;
 
 }
 
-.ant-upload-list-item-name {
+#note-input .ant-upload-list-item-name {
     display: none !important;
 }
 
-.ant-btn-icon {
+#note-input .ant-btn-icon {
     background-color: rgba(255, 0, 0, 0.224) !important;
     font-size: 1rem;
     padding: 0.2rem;

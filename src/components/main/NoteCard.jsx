@@ -1,4 +1,4 @@
-import { FaImage, FaPaperclip } from "react-icons/fa";
+import { FaImage, FaPaperclip, FaSpinner } from "react-icons/fa";
 import { GrCopy } from "react-icons/gr";
 import { BsTrash } from "react-icons/bs";
 import { FaPlay } from "react-icons/fa6";
@@ -8,34 +8,69 @@ import { useNote } from "../../contexts/useNote";
 import { useState } from "react";
 import { SiTicktick } from "react-icons/si";
 import { CopyToClipboard } from "react-copy-to-clipboard";
-import { Image, Modal } from "antd";
+import { Image, Modal, Upload } from "antd";
 import hostUrl from "../../endpoints";
-import { Button } from "antd";
-import { FaStar, FaRegStar } from "react-icons/fa";
+
+import { FaStar } from "react-icons/fa";
+import { LuImagePlus } from "react-icons/lu";
 import { FiMinimize2, FiMaximize2 } from "react-icons/fi";
+import ImageUpload from "../ImageUpload";
 
 const NoteCard = ({ data }) => {
-  const { _id: id, title, description, createdAt, audio, images = [] } = data;
-  const [loading, setLoading] = useState(false);
+  const {
+    _id: id,
+    title,
+    description,
+    createdAt,
+    audio,
+    images = [],
+    fav = false,
+  } = data;
+
   const [openModal, setOpenModal] = useState(false);
-  const [isMaximized, setIsMaximized] = useState(false); // State to manage max/minimize
-  const [isFavorite, setIsFavorite] = useState(false); // State to manage favorite
+  const [isMaximized, setIsMaximized] = useState(false);
+  const [isFavorite, setIsFavorite] = useState(fav);
+  const [newPhotos, setNewPhotos] = useState([]);
+
+  const [isRename, setIsRename] = useState(false);
+  const [copyStatus, setCopyStatus] = useState(false);
+  const [deleteLoading, setDeleteLoading] = useState(false);
+  const [updateLoading, setUpdateLoading] = useState(false);
+  const [uploadLoading, setUploadLoading] = useState(false);
+
+  const { deleteNote, updateNote, addNewPhotos } = useNote();
 
   const handleMaximizeMinimize = () => {
     setIsMaximized(!isMaximized);
   };
 
   const handleFavoriteToggle = () => {
+    handleUpdate(id, { fav: !isFavorite }, setUpdateLoading);
     setIsFavorite(!isFavorite);
   };
 
-  const { deleteNote } = useNote();
-  const [textToCopy, setTextToCopy] = useState("");
-  const [copyStatus, setCopyStatus] = useState(false);
-
   const onCopyText = () => {
     setCopyStatus(true);
-    setTimeout(() => setCopyStatus(false), 2000); // Reset status after 2 seconds
+    setTimeout(() => setCopyStatus(false), 2000);
+  };
+  const handleDeleteNote = async () => {
+    await deleteNote(id, setDeleteLoading);
+  };
+  const handleUpdate = async (payload) => {
+    await updateNote(id, payload, setUpdateLoading);
+  };
+  const handleNewPhotos = async () => {
+    if (newPhotos.length === 0) {
+      return;
+    }
+
+    const formData = new FormData();
+    newPhotos.forEach((photo) =>
+      formData.append("images", photo.originFileObj)
+    );
+    await addNewPhotos(id, formData, setUploadLoading);
+    setNewPhotos([]);
+    setOpenModal(false);
   };
   return (
     <div className="bg-white p-6 rounded-lg shadow-md w-full border border-gray-300/60 relative">
@@ -64,9 +99,10 @@ const NoteCard = ({ data }) => {
 
       {/* Title & Content */}
       <div className="m-0 p-0" onClick={() => setOpenModal(true)}>
-        <h3 className="font-bold text-lg mt-1">{title}</h3>
-        <div className="flex flex-col justify-between h-[19ch]">
-          <p className="text-sm text-gray-600 mt-1 leading-relaxed max-h-[18ch] overflow-hidden text-ellipsis whitespace-wrap">
+        {!isRename && <h3 className="font-bold text-lg mt-1">{title}</h3>}
+        {isRename && <input type="text" value={title} />}
+        <div className="flex flex-col justify-between h-[19ch] w-full">
+          <p className="text-sm text-gray-600 mt-1  max-h-[18ch] ">
             {description}
           </p>
           <span className="px-2 py-1 text-xs flex flex-row gap-2 w-fit items-center font-semibold rounded-full bg-gray-200/50 text-gray-700">
@@ -96,11 +132,23 @@ const NoteCard = ({ data }) => {
             Rename
           </span>
         </div>
+        <div className="relative transition-all duration-100 hover:bg-indigo-200/50 p-1 rounded-lg group">
+          <FaStar
+            className={
+              "cursor-pointer" + updateLoading ? "pointer-event-none" : ""
+            }
+            onClick={handleFavoriteToggle}
+            size={19}
+            color={isFavorite && "gold"}
+          />
+          <span className="absolute left-1/2 whitespace-nowrap -top-7 transform -translate-x-1/2 scale-0 group-hover:scale-100 transition bg-indigo-700/20 text-indigo-900 text-xs px-2 py-1 rounded-md">
+            {isFavorite ? "Un-fav" : "Fav"}
+          </span>
+        </div>
 
         <button
-          onClick={() => {
-            deleteNote(id, setLoading);
-          }}
+          onClick={handleDeleteNote}
+          disabled={deleteLoading}
           className="relative transition-all duration-100 hover:bg-red-200/50 p-1 rounded-lg group"
         >
           <BsTrash className="text-red-800/80 cursor-pointer" size={18} />
@@ -112,71 +160,55 @@ const NoteCard = ({ data }) => {
 
       <Modal
         open={openModal}
-        title={title}
         footer={null}
-        onCancel={() => setOpenModal(false)}
+        onCancel={() => {
+          setOpenModal(false);
+          setIsMaximized(false);
+        }}
         centered
         destroyOnClose={true}
-        width={isMaximized ? "100%" : 520} // Toggle between full width and normal width
+        width={isMaximized ? "100%" : 520}
+        height={isMaximized ? "100%" : "auto"}
+        className="mx-auto my-auto"
         style={isMaximized ? { top: 0, left: 0, right: 0, bottom: 0 } : {}}
       >
-        <div className="flex flex-col gap-2 p-4 custom-scroll ">
-          <div className="flex gap-3 justify-end items-center mt-4">
-            {isMaximized ? (
-              <FiMinimize2
-                onClick={handleMaximizeMinimize}
-                size={18}
-                className="text-blue-800/80"
+        <div className="container h-100 mx-auto flex flex-col gap-2 p-4 custom-scroll ">
+          {/* Title */}{" "}
+          <p className="text-xs">
+            {new Intl.DateTimeFormat("en-US", {
+              dateStyle: "medium",
+              timeStyle: "short",
+            }).format(new Date(createdAt))}
+          </p>
+          <div className="flex flex-row justify-between gap-2 items-center">
+            <h2 className="text-violet-600 capitalize text-2xl font-bold">
+              {title}
+            </h2>
+            <div className="flex gap-3 justify-end items-center mt-4">
+              {isMaximized ? (
+                <FiMinimize2
+                  onClick={handleMaximizeMinimize}
+                  size={18}
+                  className="text-blue-800/80"
+                />
+              ) : (
+                <FiMaximize2
+                  onClick={handleMaximizeMinimize}
+                  size={18}
+                  className="text-blue-800/80"
+                />
+              )}
+
+              <FaStar
+                className={updateLoading ? "pointer-event-none" : ""}
+                onClick={handleFavoriteToggle}
+                size={19}
+                color={isFavorite && "gold"}
               />
-            ) : (
-              <FiMaximize2
-                onClick={handleMaximizeMinimize}
-                size={18}
-                className="text-blue-800/80"
-              />
-            )}
-
-            {isFavorite ? (
-              <FaStar onClick={handleFavoriteToggle} size={19} color="gold" />
-            ) : (
-              <FaRegStar onClick={handleFavoriteToggle} size={18} />
-            )}
+            </div>
           </div>
-          <h2 className="text-gray-600 font-bold text-lg">Note Details</h2>
-
-          {/* Title */}
-          <div className="flex flex-col gap-2">
-            <label htmlFor="title" className="text-gray-600 font-bold">
-              Title
-            </label>
-            <p className="text-sm text-gray-600">{title}</p>
-          </div>
-
-          {/* Description */}
-          <div className="flex flex-col gap-2">
-            <label htmlFor="description" className="text-gray-600 font-bold">
-              Description
-            </label>
-            <p className="text-sm text-gray-600">{description}</p>
-          </div>
-
-          {/* Created At */}
-          <div className="flex flex-col gap-2">
-            <label htmlFor="createdAt" className="text-gray-600 font-bold">
-              Created At
-            </label>
-            <p className="text-sm text-gray-600">
-              {new Intl.DateTimeFormat("en-US", {
-                dateStyle: "medium",
-                timeStyle: "short",
-              }).format(new Date(createdAt))}
-            </p>
-          </div>
-
-          {/* Audio */}
           {audio && (
             <>
-              <h2 className="text-gray-600 font-bold mt-2">Recorded Audio</h2>
               <div className="flex justify-center mt-2">
                 <audio controls className="w-full bg-transparent custom-audio">
                   <source src={hostUrl + audio} type="audio/wav" />
@@ -185,24 +217,46 @@ const NoteCard = ({ data }) => {
               </div>
             </>
           )}
-
-          {/* Images */}
-          {images.length > 0 && (
-            <>
-              <h2 className="text-gray-600 font-bold mt-2">Images</h2>
+          {/* Description */}
+          <div className="flex flex-col gap-2 p-2 border-1 border-gray-300/60 my-2 rounded-lg">
+            <p className="text-sm text-gray-600 ">{description}</p>
+          </div>
+          <div className="p-2 border-1 border-gray-300/60  rounded-lg">
+            {/* <h2 className="text-gray-600 font-bold ">Images</h2> */}
+            {images.length > 0 && (
               <div className="flex gap-2 flex-row flex-wrap ">
                 {images.map((image, index) => (
                   <img
                     key={index}
                     src={hostUrl + image}
                     alt="note"
-                    className="w-1/3  object-fit-cover"
+                    className="max-h-[10rem] max-w-1/4   object-fit-cover"
                   />
                 ))}
               </div>
-            </>
-          )}
-
+            )}
+            <div className=" my-2 border-2 border-gray-300 p-2  rounded-lg">
+              <ImageUpload
+                notePhotos={newPhotos}
+                setNotePhotos={setNewPhotos}
+                type="picture-card"
+                limit={10}
+                size={30}
+              />
+              {newPhotos.length > 0 && (
+                <button
+                  onClick={handleNewPhotos}
+                  className="bg-violet-500 my-2 hover:bg-violet-700 text-white font-bold py-2 px-4 rounded"
+                >
+                  {uploadLoading ? (
+                    <FaSpinner className="animate-spin" size={20} />
+                  ) : (
+                    "Add these photos"
+                  )}
+                </button>
+              )}
+            </div>
+          </div>
           {/* Action Buttons */}
         </div>
       </Modal>

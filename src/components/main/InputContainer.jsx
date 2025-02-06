@@ -64,7 +64,10 @@ const InputContainer = () => {
   return (
     <div className="mx-auto  transition-all duration-100 md:py-1 md:bg-white bg-transparent rounded-b-full">
       <div className="flex md:w-2/3 w-full px-2 mx-auto justify-around items-center shadow-lg bg-white shadow-gray-400/50    rounded-full  border-1 border-gray-200">
-        <div className="flex items-center gap-2 p-2  rounded-full cursor-pointer">
+        <div
+          id="note-input"
+          className="flex items-center gap-2 p-2  rounded-full cursor-pointer"
+        >
           {selectedImages.length > 0 && (
             <div className="relative  transition-all duration-100  p-1 rounded-lg group">
               <LuImageOff

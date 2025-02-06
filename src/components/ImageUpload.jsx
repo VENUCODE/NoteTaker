@@ -1,19 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { Upload, Image, Modal } from "antd";
 import { LuCross, LuImagePlus } from "react-icons/lu";
-const getBase64 = (file) =>
-  new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.readAsDataURL(file);
-    reader.onload = () => resolve(reader.result);
-    reader.onerror = (error) => reject(error);
-  });
+import getBase64 from "./utils/getBase64";
 
 const ImageUpload = ({
   notePhotos,
   setNotePhotos,
   limit = 10,
   type = "picture",
+  ...props
 }) => {
   const [fileList, setFileList] = useState([]);
   const [previewOpen, setPreviewOpen] = useState(false);
@@ -55,7 +50,7 @@ const ImageUpload = ({
         beforeUpload={() => false}
       >
         <div className="relative  transition-all duration-100  p-1 rounded-lg group">
-          <LuImagePlus size={20} />
+          <LuImagePlus size={props.size ?? 20} />
           <span className="absolute whitespace-nowrap left-1/2 -top-7 transform -translate-x-1/2 scale-0 group-hover:scale-100 transition bg-green-500/30 text-green-800 text-xs px-2 py-1 rounded-md">
             Add img
           </span>
